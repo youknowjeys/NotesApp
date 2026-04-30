@@ -63,6 +63,44 @@
     </button>
     </div>
     </div>
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
+        // Ganti data di bawah ini dengan konfigurasi dari Firebase Console kamu
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA", // Masukkan API Key asli kamu di sini
+            authDomain: "notesapp-49f62.firebaseapp.com",
+            projectId: "notesapp-49f62",
+            storageBucket: "notesapp-49f62.firebasestorage.app",
+            messagingSenderId: "55636102699",
+            appId: "1:55636102699:web:8615a4d76c93b6ab6d646e"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Fungsi Global agar bisa dipanggil dari atribut onclick di tombol
+        window.loginWithGoogle = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("User Berhasil Login:", user.displayName);
+                    
+                    // Simpan data ke browser
+                    localStorage.setItem("userName", user.displayName);
+                    
+                    // Arahkan ke dashboard
+                    window.location.href = "dashboard.php";
+                })
+                .catch((error) => {
+                    console.error("Gagal Login:", error.message);
+                    alert("Login Gagal: " + error.message);
+                });
+        };
+    </script>
 </body>
 </html>
