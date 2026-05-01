@@ -66,8 +66,7 @@
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-
+        import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
         // Ganti data di bawah ini dengan konfigurasi dari Firebase Console kamu
         const firebaseConfig = {
             apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA", // Masukkan API Key asli kamu di sini
@@ -86,28 +85,33 @@
     GithubAuthProvider 
     } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-    const auth = getAuth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
     // Fungsi Login Google
     window.loginWithGoogle = function() {
+    console.log("Tombol Google diklik!"); // Untuk cek di konsol
     signInWithPopup(auth, googleProvider)
-        .then((result) => {
-            console.log("Berhasil Login Google");
-            window.location.href = "dashboard.html";
-        })
-        .catch((error) => alert("Google Error: " + error.message));
+      .then((result) => {
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        alert("Google Error: " + error.message);
+      });
     };
 
     // Fungsi Login GitHub
     window.loginWithGithub = function() {
+    console.log("Tombol GitHub diklik!"); // Untuk cek di konsol
     signInWithPopup(auth, githubProvider)
-        .then((result) => {
-            console.log("Berhasil Login GitHub");
-            window.location.href = "dashboard.html";
-        })
-        .catch((error) => alert("GitHub Error: " + error.message));
+      .then((result) => {
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        alert("GitHub Error: " + error.message);
+        });
     };
     </script>
 </body>
