@@ -79,28 +79,36 @@
         };
 
         // Inisialisasi Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        import { 
+    getAuth, 
+    signInWithPopup, 
+    GoogleAuthProvider, 
+    GithubAuthProvider 
+    } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-        // Fungsi Global agar bisa dipanggil dari atribut onclick di tombol
-        window.loginWithGoogle = function() {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("User Berhasil Login:", user.displayName);
-                    
-                    // Simpan data ke browser
-                    localStorage.setItem("userName", user.displayName);
-                    
-                    // Arahkan ke dashboard
-                    window.location.href = "dashboard.php";
-                })
-                .catch((error) => {
-                    console.error("Gagal Login:", error.message);
-                    alert("Login Gagal: " + error.message);
-                });
-        };
+    const auth = getAuth();
+    const googleProvider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
+
+    // Fungsi Login Google
+    window.loginWithGoogle = function() {
+    signInWithPopup(auth, googleProvider)
+        .then((result) => {
+            console.log("Berhasil Login Google");
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => alert("Google Error: " + error.message));
+    };
+
+    // Fungsi Login GitHub
+    window.loginWithGithub = function() {
+    signInWithPopup(auth, githubProvider)
+        .then((result) => {
+            console.log("Berhasil Login GitHub");
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => alert("GitHub Error: " + error.message));
+    };
     </script>
 </body>
 </html>
