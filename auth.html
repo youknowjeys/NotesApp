@@ -96,8 +96,8 @@
         console.log("Mencoba Login Google...");
         signInWithPopup(auth, googleProvider)
             .then((result) => {
-                console.log("Berhasil!");
-                window.location.href = "dashboard.html";
+                console.log("Login Google Berhasil");
+                window.location.href = "dashboard.html"; 
             })
             .catch((error) => {
                 console.error(error);
@@ -109,7 +109,7 @@
         console.log("Mencoba Login GitHub...");
         signInWithPopup(auth, githubProvider)
             .then((result) => {
-                console.log("Berhasil!");
+                console.log("Login GitHub Berhasil");
                 window.location.href = "dashboard.html";
             })
             .catch((error) => {

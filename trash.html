@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash - NotesApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap" rel="stylesheet">
+    <style>
+        .bg-notes-gradient { background: radial-gradient(circle at center, #d0e7f9 0%, #4d7a97 100%); }
+        .font-cursive { font-family: 'Ms Madi', cursive; }
+    </style>
+</head>
+<body class="bg-notes-gradient h-screen flex flex-col items-center justify-center text-white/80">
+    <h1 class="text-5xl font-cursive mb-4">NotesApp</h1>
+    <p class="italic text-lg">you haven't deleted anything yet</p>
+
+    <div class="fixed bottom-0 left-0 right-0 p-4">
+        <div class="bg-white/90 backdrop-blur-md rounded-[30px] flex justify-around items-center py-4 shadow-xl max-w-lg mx-auto">
+            <a href="trash.html" class="text-slate-800"><svg class="h-8 w-8" ...> (sama seperti di atas) </svg></a>
+            <a href="add.html" class="text-slate-500">...</a>
+            <a href="dashboard.html" class="text-slate-500">...</a>
+            <a href="profile.html" class="text-slate-500">...</a>
+        </div>
+    </div>
+</body>
+</html>

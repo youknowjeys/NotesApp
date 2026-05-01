@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Note - NotesApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap" rel="stylesheet">
+    <style>
+        .bg-notes-gradient { background: radial-gradient(circle at center, #d0e7f9 0%, #4d7a97 100%); }
+        .font-cursive { font-family: 'Ms Madi', cursive; }
+    </style>
+</head>
+<body class="bg-notes-gradient h-screen flex flex-col px-6 pt-10 overflow-hidden">
+    
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-4xl font-cursive text-white">NotesApp</h1>
+        <div class="flex gap-2">
+            <a href="dashboard.html" class="bg-white/80 text-gray-600 px-4 py-1 rounded-full text-sm shadow hover:bg-white transition">delete</a>
+            <button onclick="saveNewNote()" class="bg-white/80 text-gray-600 px-4 py-1 rounded-full text-sm shadow hover:bg-white transition">save</button>
+        </div>
+    </div>
+
+    <div class="bg-white/90 backdrop-blur-md rounded-[30px] p-8 flex-grow mb-32 shadow-inner">
+        <textarea id="new-note-textarea" placeholder="Enter text to start your notes!" 
+            class="w-full h-full bg-transparent outline-none text-gray-700 placeholder:text-gray-300 resize-none text-lg text-center"></textarea>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 p-4">
+        <div class="bg-white/90 backdrop-blur-md rounded-[30px] flex justify-around items-center py-4 shadow-xl max-w-lg mx-auto">
+            <a href="trash.html" class="text-slate-500"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></a>
+            <a href="add.html" class="text-slate-800"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></a>
+            <a href="dashboard.html" class="text-slate-500"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg></a>
+            <a href="profile.html" class="text-slate-500"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></a>
+        </div>
+    </div>
+
+    <script>
+        function saveNewNote() {
+            const text = document.getElementById('new-note-textarea').value;
+            if (text.trim() === "") return alert("Isi catatan dulu!");
+
+            // Ambil data lama dari localStorage
+            let notes = JSON.parse(localStorage.getItem('myNotes')) || [];
+            
+            // Tambah catatan baru
+            notes.unshift({
+                id: Date.now(),
+                content: text,
+                color: "bg-white/40"
+            });
+
+            // Simpan kembali
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+            window.location.href = "dashboard.html";
+        }
+    </script>
+</body>
+</html>
