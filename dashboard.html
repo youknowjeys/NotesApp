@@ -130,7 +130,7 @@ snapshot.forEach((doc) => {
                     `;
                 });
 
-                // Fungsi pindahkan ke Trash
+// Fungsi pindahkan ke Trash
                 window.moveToTrash = async function(noteId) {
                     if (!confirm("Hapus catatan ini?")) return;
                     const noteRef = doc(db, "notes", noteId);
@@ -138,6 +138,7 @@ snapshot.forEach((doc) => {
                         isDeleted: true
                     });
                     console.log("Note moved to trash:", noteId);
+                    window.location.href = "trash.html";
                 };
             });
         });
