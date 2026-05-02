@@ -91,7 +91,7 @@
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
-    // 4. Daftarkan fungsi ke objek window agar bisa dipanggil oleh onclick di HTML
+// 4. Daftarkan fungsi ke objek window agar bisa dipanggil oleh onclick di HTML
     window.loginWithGoogle = function() {
         console.log("Mencoba Login Google...");
         signInWithPopup(auth, googleProvider)
@@ -101,7 +101,12 @@
             })
             .catch((error) => {
                 console.error(error);
-                alert("Google Error: " + error.message);
+                // Handle account exists with different credential
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    alert("Akun ini sudah terdaftar dengan metode login lain. Silakan gunakan cara login yang sama seperti saat pertama mendaftar (misal: Google).");
+                } else {
+                    alert("Google Error: " + error.message);
+                }
             });
     };
 
@@ -114,7 +119,12 @@
             })
             .catch((error) => {
                 console.error(error);
-                alert("GitHub Error: " + error.message);
+                // Handle account exists with different credential
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    alert("Akun ini sudah terdaftar dengan metode login lain. Silakan gunakan cara login yang sama seperti saat pertama mendaftar (misal: Google).");
+                } else {
+                    alert("GitHub Error: " + error.message);
+                }
             });
     };
     </script>
