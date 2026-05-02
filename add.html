@@ -76,6 +76,7 @@ import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.g
 await addDoc(collection(db, "notes"), {
                     text: text,
                     userId: user.uid,
+                    isDeleted: false,
                     color: "bg-white/40",
                     createdAt: serverTimestamp()
                 });

@@ -76,7 +76,7 @@
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, onSnapshot, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
@@ -102,10 +102,11 @@
 
             console.log("User logged in:", user.uid);
 
-// Query notes for current user and sort by newest first
+// Query notes for current user (not deleted) and sort by newest first
             const q = query(
                 collection(db, "notes"), 
                 where("userId", "==", user.uid),
+                where("isDeleted", "==", false),
                 orderBy("createdAt", "desc")
             );
 
@@ -118,15 +119,26 @@
                     return;
                 }
 
-                snapshot.forEach((doc) => {
+snapshot.forEach((doc) => {
                     const note = doc.data();
+                    const noteId = doc.id;
                     console.log("Note:", note.text);
                     container.innerHTML += `
-                        <div class="${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden">
+                        <div onclick="moveToTrash('${noteId}')" class="${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden">
                             <p class="text-gray-700/80 font-medium text-lg leading-tight line-clamp-2">${note.text}</p>
                         </div>
                     `;
                 });
+
+                // Fungsi pindahkan ke Trash
+                window.moveToTrash = async function(noteId) {
+                    if (!confirm("Hapus catatan ini?")) return;
+                    const noteRef = doc(db, "notes", noteId);
+                    await updateDoc(noteRef, {
+                        isDeleted: true
+                    });
+                    console.log("Note moved to trash:", noteId);
+                };
             });
         });
     </script>
