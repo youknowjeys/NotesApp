@@ -38,7 +38,7 @@
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
@@ -73,11 +73,11 @@
 
             try {
                 console.log("Saving note for user:", user.uid);
-                await addDoc(collection(db, "notes"), {
+await addDoc(collection(db, "notes"), {
                     text: text,
                     userId: user.uid,
                     color: "bg-white/40",
-                    createdAt: new Date()
+                    createdAt: serverTimestamp()
                 });
                 console.log("Note saved successfully!");
                 window.location.href = "dashboard.html";
