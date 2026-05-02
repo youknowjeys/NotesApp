@@ -35,24 +35,47 @@
         </div>
     </div>
 
-    <script>
-        function saveNewNote() {
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
+            authDomain: "notesapp-49f62.firebaseapp.com",
+            projectId: "notesapp-49f62",
+            storageBucket: "notesapp-49f62.firebasestorage.app",
+            messagingSenderId: "55636102699",
+            appId: "1:55636102699:web:8615a4d76c93b6ab6d646e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.saveNewNote = async function() {
             const text = document.getElementById('new-note-textarea').value;
             if (text.trim() === "") return alert("Isi catatan dulu!");
 
-            // Ambil data lama dari localStorage
-            let notes = JSON.parse(localStorage.getItem('myNotes')) || [];
-            
-            // Tambah catatan baru
-            notes.unshift({
-                id: Date.now(),
-                content: text,
-                color: "bg-white/40"
-            });
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Silakan login terlebih dahulu!");
+                window.location.href = "auth.html";
+                return;
+            }
 
-            // Simpan kembali
-            localStorage.setItem('myNotes', JSON.stringify(notes));
-            window.location.href = "dashboard.html";
+            try {
+                await addDoc(collection(db, "notes"), {
+                    text: text,
+                    userId: user.uid,
+                    color: "bg-white/40",
+                    createdAt: new Date()
+                });
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                console.error("Error adding note: ", error);
+                alert("Gagal menyimpan catatan!");
+            }
         }
     </script>
     <!-- NAVBAR BAWAH -->

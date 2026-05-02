@@ -73,26 +73,58 @@
             </a>
         </div>
     </div>
-    <script>
-    function renderNotes() {
-    const container = document.getElementById('notes-container'); // Pastikan ID ini sama dengan di HTML
-    const notesData = JSON.parse(localStorage.getItem('myNotes')) || [];
-    
-    container.innerHTML = "";
-    
-    if (notesData.length === 0) {
-        container.innerHTML = `<p class="text-white/60 italic text-center pt-20">No notes yet...</p>`;
-        return;
-    }
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-    notesData.forEach(note => {
-        const card = document.createElement('div');
-        card.className = `${note.color} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden`;
-        card.innerHTML = `<p class="text-gray-700/80 font-medium text-lg leading-tight line-clamp-2">${note.content}</p>`;
-        container.appendChild(card);
-    });
-}
-renderNotes();
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
+            authDomain: "notesapp-49f62.firebaseapp.com",
+            projectId: "notesapp-49f62",
+            storageBucket: "notesapp-49f62.firebasestorage.app",
+            messagingSenderId: "55636102699",
+            appId: "1:55636102699:web:8615a4d76c93b6ab6d646e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const container = document.getElementById('notes-container');
+
+        // Render notes from Firestore based on current user
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // Not logged in, redirect to auth
+                window.location.href = "auth.html";
+                return;
+            }
+
+            // Query notes for current user only
+            const q = query(
+                collection(db, "notes"), 
+                where("userId", "==", user.uid),
+                orderBy("createdAt", "desc")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                container.innerHTML = "";
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `<p class="text-white/60 italic text-center pt-20">No notes yet...</p>`;
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const note = doc.data();
+                    const card = document.createElement('div');
+                    card.className = `${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden`;
+                    card.innerHTML = `<p class="text-gray-700/80 font-medium text-lg leading-tight line-clamp-2">${note.text}</p>`;
+                    container.appendChild(card);
+                });
+            });
+        });
     </script>
 
     <!-- NAVBAR BAWAH -->
