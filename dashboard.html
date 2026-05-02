@@ -93,22 +93,23 @@
 
         const container = document.getElementById('notes-container');
 
-        // Render notes from Firestore based on current user
+// Render notes from Firestore based on current user
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                // Not logged in, redirect to auth
                 window.location.href = "auth.html";
                 return;
             }
 
-            // Query notes for current user only
+            console.log("User logged in:", user.uid);
+
+            // Query notes for current user only (without orderBy to avoid index issue)
             const q = query(
                 collection(db, "notes"), 
-                where("userId", "==", user.uid),
-                orderBy("createdAt", "desc")
+                where("userId", "==", user.uid)
             );
 
             onSnapshot(q, (snapshot) => {
+                console.log("Notes found:", snapshot.size);
                 container.innerHTML = "";
                 
                 if (snapshot.empty) {
@@ -118,10 +119,12 @@
 
                 snapshot.forEach((doc) => {
                     const note = doc.data();
-                    const card = document.createElement('div');
-                    card.className = `${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden`;
-                    card.innerHTML = `<p class="text-gray-700/80 font-medium text-lg leading-tight line-clamp-2">${note.text}</p>`;
-                    container.appendChild(card);
+                    console.log("Note:", note.text);
+                    container.innerHTML += `
+                        <div class="${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition active:scale-95 cursor-pointer flex items-start overflow-hidden">
+                            <p class="text-gray-700/80 font-medium text-lg leading-tight line-clamp-2">${note.text}</p>
+                        </div>
+                    `;
                 });
             });
         });
