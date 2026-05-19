@@ -14,17 +14,7 @@
     </div>
 
     <div id="notes-container" class="flex-grow overflow-y-auto px-6 space-y-4 pb-32 no-scrollbar">
-        <div id="firebase-notes" class="space-y-4"></div>
-
-        <div id="default-notes" class="space-y-4 pt-4">
-            <div class="bg-white/20 backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/10 opacity-70 cursor-default">
-                <p class="text-white/60 italic text-sm">Selamat datang di NotesApp! Tap tombol '+' untuk mulai menulis.</p>
-            </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/5 opacity-50 cursor-default">
-                <p class="text-white/40 italic text-sm">Catatan lamamu akan tersimpan aman di sini.</p>
-            </div>
         </div>
-    </div>
 
     <div id="editModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
         <div class="bg-gradient-to-b from-cyan-100 to-blue-400 w-full max-w-lg rounded-[30px] p-6 shadow-2xl border border-white/30">
@@ -53,7 +43,7 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 p-4">
+    <div class="fixed bottom-0 left-0 right-0 p-4 z-50">
         <div class="bg-white/90 backdrop-blur-md rounded-[30px] flex justify-around items-center py-4 shadow-xl max-w-lg mx-auto">
             <a href="trash.html" class="text-slate-400 hover:text-red-500 transition"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></a>
             <a href="add.html" class="text-slate-400 hover:text-slate-800 transition"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></a>
@@ -79,7 +69,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const firebaseContainer = document.getElementById('firebase-notes');
+        const container = document.getElementById('notes-container');
 
         onAuthStateChanged(auth, (user) => {
             if (!user) {
@@ -95,10 +85,10 @@
             );
 
             onSnapshot(q, (snapshot) => {
-                firebaseContainer.innerHTML = "";
+                container.innerHTML = "";
                 
                 if (snapshot.empty) {
-                    return; // Biarkan hanya default-notes yang tampil di bawah
+                    return; // Biarkan kosong bersih kalau belum ada data
                 }
 
                 snapshot.forEach((docSnap) => {
@@ -107,18 +97,16 @@
                     const noteText = note.text || '';
                     
                     const div = document.createElement('div');
-                    div.className = `${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition-all duration-200 hover:scale-[1.02] cursor-pointer flex items-start overflow-hidden`;
+                    div.className = `${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition-all duration-200 hover:scale-[1.02] cursor-pointer flex items-start overflow-hidden w-full`;
                     div.innerHTML = `<p class="text-gray-800 font-medium text-lg leading-tight line-clamp-2">${noteText}</p>`;
                     
-                    // Event listener aman tanpa escape character problem
                     div.onclick = () => window.openEditModal(noteId, noteText);
                     
-                    firebaseContainer.appendChild(div);
+                    container.appendChild(div);
                 });
             });
         });
 
-        // Window level functions untuk modal
         window.openEditModal = function(noteId, text) {
             document.getElementById('editNoteId').value = noteId;
             document.getElementById('editContent').value = text;
