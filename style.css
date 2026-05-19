@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap');
+
+/* Mengganti gradien lama dengan background gambar awan */
+.bg-notes-cloud {
+    background-image: url('background.jpeg'); /* Pastikan file gambar ada di folder yang sama */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.font-cursive {
+    font-family: 'Ms Madi', cursive;
+}
+
+/* Menghilangkan scrollbar tapi tetap bisa di-scroll */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
