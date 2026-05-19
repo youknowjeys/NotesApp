@@ -45,6 +45,53 @@
             <a href="profile.html" class="text-blue-600 transition"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></a>
         </div>
     </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
+            authDomain: "notesapp-49f62.firebaseapp.com",
+            projectId: "notesapp-49f62",
+            storageBucket: "notesapp-49f62.firebasestorage.app",
+            messagingSenderId: "55636102699",
+            appId: "1:55636102699:web:8615a4d76c93b6ab6d646e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Menangkap perubahan status login pengguna
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // 1. Ambil data profil dari akun Google / Firebase
+                const name = user.displayName || "User NotesApp";
+                const email = user.email || "Email tidak ditemukan";
+                const photo = user.photoURL || "https://via.placeholder.com/60";
+
+                // 2. Tembakkan langsung ke elemen HTML agar tulisan "Loading..." hilang
+                document.getElementById('profile-name').innerText = name;
+                document.getElementById('profile-email').innerText = email;
+                document.getElementById('profile-pic').src = photo;
+            } else {
+                // Kalau tidak ada user (belum login/sudah logout), tendang ke auth.html
+                window.location.href = "auth.html";
+            }
+        });
+
+        // Logika untuk Tombol Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const konfirmasi = confirm("Apakah kamu yakin ingin keluar?");
+            if (konfirmasi) {
+                try {
+                    await signOut(auth);
+                    window.location.href = "auth.html";
+                } catch (error) {
+                    console.error("Gagal logout:", error);
+                    alert("Gagal melakukan logout, coba lagi!");
+                }
+            }
+        });
+    </script>
 </body>
 </html>
