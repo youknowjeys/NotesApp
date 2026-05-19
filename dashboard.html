@@ -69,6 +69,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        // KUNCI: Target penulisan data diarahkan spesifik ke notes-container saja
         const container = document.getElementById('notes-container');
 
         onAuthStateChanged(auth, (user) => {
@@ -85,10 +87,11 @@
             );
 
             onSnapshot(q, (snapshot) => {
+                // Hanya mengosongkan area daftar catatan, bukan seluruh halaman layar!
                 container.innerHTML = "";
                 
                 if (snapshot.empty) {
-                    return; // Biarkan kosong bersih kalau belum ada data
+                    return; 
                 }
 
                 snapshot.forEach((docSnap) => {
@@ -100,7 +103,7 @@
                     div.className = `${note.color || 'bg-white/40'} backdrop-blur-sm rounded-[25px] p-8 h-32 shadow-sm border border-white/20 transition-all duration-200 hover:scale-[1.02] cursor-pointer flex items-start overflow-hidden w-full`;
                     div.innerHTML = `<p class="text-gray-800 font-medium text-lg leading-tight line-clamp-2">${noteText}</p>`;
                     
-                    div.onclick = () => window.openEditModal(noteId, noteText);
+                    div.onclick = () => window.openEditModal(noteId, text);
                     
                     container.appendChild(div);
                 });
