@@ -30,6 +30,79 @@
             <a href="profile.html" class="text-slate-400 hover:text-slate-800 transition"><svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></a>
         </div>
     </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
+        // Konfigurasi Firebase NotesApp kamu
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmP8ZPkeyWiQJMbmuNbFUxb8ZmrgNrKIA",
+            authDomain: "notesapp-49f62.firebaseapp.com",
+            projectId: "notesapp-49f62",
+            storageBucket: "notesapp-49f62.firebasestorage.app",
+            messagingSenderId: "55636102699",
+            appId: "1:55636102699:web:8615a4d76c93b6ab6d646e"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // Cek status login user
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user; // Simpan data user yang sedang login
+            } else {
+                // Kalau belum login, paksa balik ke halaman auth
+                window.location.href = "auth.html";
+            }
+        });
+
+        // Logika ketika tombol SAVE diklik
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            const textContent = document.getElementById('note-text').value.trim();
+
+            // Validasi: Jangan biarkan user simpan catatan kosong
+            if (!textContent) {
+                alert('Catatan tidak boleh kosong!');
+                return;
+            }
+
+            if (!currentUser) {
+                alert('Sesi login tidak valid, silakan login ulang.');
+                return;
+            }
+
+            try {
+                // Proses simpan data ke Firestore di dalam collection "notes"
+                await addDoc(collection(db, "notes"), {
+                    text: textContent,
+                    userId: currentUser.uid,        // Menyimpan catatan berdasarkan akun user
+                    isDeleted: false,               // Bawaan false (belum dihapus ke trash)
+                    createdAt: new Date(),          // Waktu pembuatan catatan
+                    color: "bg-white/40"            // Warna dasar transparan estetik kamu
+                });
+
+                // KUNCI: Setelah sukses masuk database, langsung pindah ke dashboard!
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error("Error menyimpan data: ", error);
+                alert("Gagal menyimpan catatan, coba lagi!");
+            }
+        });
+
+        // Tambahan Logika: Tombol DELETE/BATAL kalau mau langsung balik ke home
+        document.getElementById('delete-btn').addEventListener('click', () => {
+            const konfirmasi = confirm("Batalkan menulis catatan?");
+            if (konfirmasi) {
+                window.location.href = "dashboard.html";
+            }
+        });
+    </script>
 </body>
 </html>
